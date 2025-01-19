@@ -1,5 +1,5 @@
-.vscode
-build
-venv
-CMakeUserPresets.json
+.vscode/
+build/
+venv/
 
+CMakeUserPresets.json
