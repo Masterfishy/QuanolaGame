@@ -10,16 +10,23 @@ set(HEADERS include/CliRenderer.hpp
             include/IRenderer.hpp 
             include/Node.hpp 
             include/Event.hpp
-            include/Option.hpp)
+            include/Option.hpp
+            include/Serializer.hpp
+            )
 
 set(SOURCES src/quanola.cpp
             src/CliRenderer.cpp
             src/GameManager.cpp
             src/Node.cpp
-            src/Option.cpp)
+            src/Option.cpp
+            src/Serializer.cpp
+            )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                                   $<INSTALL_INTERFACE:include>)
+
+find_package(jsoncpp REQUIRED)
+target_link_libraries(${PROJECT_NAME} JsonCpp::JsonCpp)

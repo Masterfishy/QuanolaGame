@@ -7,6 +7,9 @@ class QuanolaRecipe(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps", "CMakeToolchain"
 
+    def requirements(self):
+        self.requires("jsoncpp/1.9.6")
+
     def layout(self):
         cmake_layout(self)
 
