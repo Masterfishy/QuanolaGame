@@ -9,7 +9,9 @@ def parse_markdown(markdown: str) -> list:
 
     sections = re.split(r"(?=^## .*$)", markdown.strip(), flags=re.MULTILINE)
 
-    for i, section in enumerate(sections):
+    node_id_counter = 0
+
+    for section in sections:
 
         node = {}
 
@@ -19,7 +21,6 @@ def parse_markdown(markdown: str) -> list:
 
         # Grab the header
         header = header_split[1]
-        node["title"] = header
 
         content = header_split[2]
 
@@ -27,11 +28,11 @@ def parse_markdown(markdown: str) -> list:
 
         content_split = re.split(r"### Cards", content.strip(), flags=re.MULTILINE)
         if len(content_split) != 2:
+            print(f"Dropped: {header}, no cards found")
             continue
 
         # Grab the header text
         header_text = content_split[0]
-        node["text"] = header_text
 
         cards = content_split[1]
 
@@ -39,9 +40,10 @@ def parse_markdown(markdown: str) -> list:
         
         cards_split = re.split(r"(?=^#### )", cards.strip(), flags=re.MULTILINE)
         if len(cards_split) <= 1:
+            print(f"Dropped: {header}, no options found")
             continue
 
-        node["options"] = []
+        options = []
 
         for card in cards_split:
             card_split = re.split(r"^#### (.*)", card.strip())
@@ -55,15 +57,41 @@ def parse_markdown(markdown: str) -> list:
             card_text = card_split[2]
             # print(f"{card_title} {card_text}")
 
-            # print("^^^^^^^")
+            default_results = []
+            random_results = []
+            conditional_results = []
+
+            result_split = re.split(r"- Event - (\w+) ", card_text.strip(), flags=re.MULTILINE)
+            if len(result_split) < 2:
+                print(f"Dropped option: {card_title}, no results")
+                continue
+            
+            shared_text = result_split[0]
+            result_type = result_split[1]
+            print(f"Result: {result_type} > {result_split[2]}")
+            if result_type == "Random":
+                pass
+
+            if result_type == "Default":
+                pass
+
+            if result_type == "Conditional":
+                pass
 
             option = {}
             option["title"] = card_title
             option["text"] = card_text
 
-            node["options"].append(option)
+            options.append(option)
+            # print("^^^^^^^")
 
-        node["id"] = i
+        node["id"] = node_id_counter
+        node["title"] = header
+        node["text"] = header_text
+        node["options"] = options
+
+        node_id_counter += 1
+
         nodes.append(node)
 
     return nodes
@@ -85,5 +113,5 @@ if __name__ == "__main__":
 
     parsed_nodes = parse_markdown(markdown)
 
-    with open(outputFileName, "w") as file:
-        json.dump(parsed_nodes, file, indent=2, sort_keys=True)
+    # with open(outputFileName, "w") as file:
+    #     json.dump(parsed_nodes, file, indent=2)
