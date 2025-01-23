@@ -2,9 +2,10 @@
 
 import re
 import sys
+import json
 
-def parse_markdown(markdown: str) -> str:
-    nodes = {}
+def parse_markdown(markdown: str) -> list:
+    nodes = []
 
     sections = re.split(r"(?=^## .*$)", markdown.strip(), flags=re.MULTILINE)
 
@@ -62,22 +63,27 @@ def parse_markdown(markdown: str) -> str:
 
             node["options"].append(option)
 
-        nodes[i] = node
+        node["id"] = i
+        nodes.append(node)
 
-        print("----------------------------------------")
+    return nodes
 
-    print(nodes[1])
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 1:
-        print("Please provide a file.")
+    if len(sys.argv) < 3:
+        print("Invalid usage! Usage: ParseMarkdown.py <markdown-file> <output-file>")
         sys.exit(1)
 
     markdownFileName = sys.argv[1]
+    outputFileName = sys.argv[2]
+
     markdown = ""
     
     with open(markdownFileName, "r") as file:
         markdown = file.read()
 
-    parse_markdown(markdown)
+    parsed_nodes = parse_markdown(markdown)
+
+    with open(outputFileName, "w") as file:
+        json.dump(parsed_nodes, file, indent=2, sort_keys=True)
