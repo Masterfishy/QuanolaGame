@@ -70,13 +70,6 @@ bool Serializer::DeserializeFromJson(const Json::Value& jsonData,
             continue;
         }
 
-        // Deserialize the node title
-        const Json::Value& jsonTitle = jsonNode["title"];
-        if (jsonTitle == Json::Value::null)
-        {
-            continue;
-        }
-
         // Deserialize the node text
         const Json::Value& jsonText = jsonNode["text"];
         if (jsonText == Json::Value::null)

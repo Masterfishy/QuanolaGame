@@ -26,10 +26,7 @@ GameManager::GameManager(std::unique_ptr<IRenderer>& renderer,
 }
 
 //-----
-GameManager::~GameManager()
-{
-    // TODO Clean up the nodes?
-}
+GameManager::~GameManager() {}
 
 //-----
 void GameManager::Update()
@@ -50,6 +47,7 @@ void GameManager::OnNext()
         const auto& nextNode = mGameNodes.find(nextId);
         if (nextNode == mGameNodes.end())
         {
+            // TODO handle this case better
             mGameState.node = nullptr;
         }
         else

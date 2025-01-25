@@ -25,6 +25,7 @@ void Option::SetText(const std::string& text)
 //-----
 int Option::GetNode() const
 {
+    // TODO handle results
     if (!mDefaultNodeIds.empty())
     {
         return mDefaultNodeIds.front();
