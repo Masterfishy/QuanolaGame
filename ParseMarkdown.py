@@ -7,95 +7,92 @@ import json
 def parse_markdown(markdown: str) -> list:
     nodes = []
 
-    sections = re.split(r"(?=^## .*$)", markdown.strip(), flags=re.MULTILINE)
+    node_id_lookup_table = {}    # title -> id
+    node_lookup_table = {}       # id -> node
 
-    node_id_counter = 0
-
-    for section in sections:
-
+    sections = re.split(r"^## ([^{]+?)(?: \{.*\}|\n)$", markdown.strip(), flags=re.MULTILINE)
+    if len(sections) < 3:
+        return
+    
+    for i, title in enumerate(sections[1::2]):
         node = {}
+        node["id"] = i
+        node["title"] = title.lower()
 
-        header_split = re.split(r"^## ([^{]+?)(?: \{.*\}|\n)$", section.strip(), flags=re.MULTILINE)
-        if len(header_split) != 3:
+        node_id_lookup_table[node["title"]] = node["id"]
+        node_lookup_table[node["id"]] = node
+
+    print(node_id_lookup_table)
+
+    for i, section in enumerate(sections[2::2]):
+
+        content_split = re.split(r"### Cards", section.strip(), flags=re.MULTILINE)
+        if len(content_split) < 1:
+            print(f"Dropped {node_lookup_table.get(i).get('title')}")
             continue
 
-        # Grab the header
-        header = header_split[1]
+        # print(content_split)
 
-        content = header_split[2]
-
-        # print(f"{i} {header}")
-
-        content_split = re.split(r"### Cards", content.strip(), flags=re.MULTILINE)
-        if len(content_split) != 2:
-            print(f"Dropped: {header}, no cards found")
+        node = node_lookup_table.get(i)
+        if node is None:
+            print(f"Dropping content {i}, no node")
             continue
 
-        # Grab the header text
-        header_text = content_split[0]
+        # Grab the node text
+        node["text"] = content_split[0]
 
-        cards = content_split[1]
-
-        # print(header_text)
-        
-        cards_split = re.split(r"(?=^#### )", cards.strip(), flags=re.MULTILINE)
-        if len(cards_split) <= 1:
-            print(f"Dropped: {header}, no options found")
+        if len(content_split) < 2:
             continue
 
         options = []
 
-        for card in cards_split:
-            card_split = re.split(r"^#### (.*)", card.strip())
-            if len(card_split) < 2:
+        # print(content_split[1])
+
+        cards_split = re.split(r"(?=^#### .*)", content_split[1].strip(), flags=re.MULTILINE)
+        for card in cards_split[1::]:
+            print(card)
+
+            card_title = re.search(r"^#### (.*)", card.strip())
+            if card_title is None:
                 continue
 
-            # Grab the card title
-            card_title = card_split[1]
+            print(card_title)
+            print(card_title.groups()[0])
 
-            # Grab the card text
-            card_text = card_split[2]
-            # print(f"{card_title} {card_text}")
+            default_results = [result.replace("-"," ") for result in re.findall(r"- Event - Default .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)]
+            random_results = [result.replace("-"," ") for result in re.findall(r"- Event - Random .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)]
+            conditional_results = [result.replace("-"," ") for result in re.findall(r"- Event - Conditional .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)]
 
-            default_results = []
-            random_results = []
-            conditional_results = []
+            print(default_results)
+            print(random_results)
+            print(conditional_results)
 
-            result_split = re.split(r"- Event - (\w+) ", card_text.strip(), flags=re.MULTILINE)
-            if len(result_split) < 2:
-                print(f"Dropped option: {card_title}, no results")
-                continue
-            
-            shared_text = result_split[0]
-            result_type = result_split[1]
-            print(f"Result: {result_type} > {result_split[2]}")
-            if result_type == "Random":
-                pass
+            # Make a node for each result
 
-            if result_type == "Default":
-                pass
+            # result_node["id"] = node_counter ++
+            # result_node["title"] = title
+            # result_node["text"] = text
+            # result_node["next"] = node_id_lookup_table.get(title)
 
-            if result_type == "Conditional":
-                pass
+            # Add the results to the option
 
             option = {}
-            option["title"] = card_title
-            option["text"] = card_text
+            option["title"] = card_title.groups()[0]
+            option["default_results"] = [node_id_lookup_table.get(title) for title in default_results]
+            option["random_results"] = [node_id_lookup_table.get(title) for title in random_results]
+            option["conditional_results"] = [node_id_lookup_table.get(title) for title in conditional_results]
+
+            print(option)
 
             options.append(option)
-            # print("^^^^^^^")
 
-        node["id"] = node_id_counter
-        node["title"] = header
-        node["text"] = header_text
+            print("-" * 20)
+
         node["options"] = options
 
-        node_id_counter += 1
+        print("=" * 20)
 
-        nodes.append(node)
-
-    return nodes
-
+    return list(node_lookup_table.values())
 
 if __name__ == "__main__":
 
@@ -113,5 +110,5 @@ if __name__ == "__main__":
 
     parsed_nodes = parse_markdown(markdown)
 
-    # with open(outputFileName, "w") as file:
-    #     json.dump(parsed_nodes, file, indent=2)
+    with open(outputFileName, "w") as file:
+        json.dump(parsed_nodes, file, indent=2)
