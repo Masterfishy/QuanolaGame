@@ -2,6 +2,7 @@
 
 #include "GameState.hpp"
 
+#include <map>
 #include <memory>
 
 // Forward declarations
@@ -13,7 +14,7 @@ class GameManager
 {
   public:
     GameManager(std::unique_ptr<IRenderer>& renderer,
-                std::unique_ptr<Node>& startNode, int startQuanola);
+                std::map<int, std::unique_ptr<Node>>& nodes, int startQuanola);
 
     /**
      * Destructor.
@@ -44,7 +45,7 @@ class GameManager
     /**
      * The starting node of the game.
      */
-    std::unique_ptr<Node> mStartNode;
+    std::map<int, std::unique_ptr<Node>> mGameNodes;
 
     /**
      * The current game state

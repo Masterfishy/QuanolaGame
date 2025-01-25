@@ -2,7 +2,7 @@
 #include "Option.hpp"
 
 //-----
-Node::Node() : mText(""), mOptions(), mNextNode(nullptr) {}
+Node::Node() : mText(""), mOptions(), mNextNodeId(-1) {}
 
 //-----
 Node::~Node() {}
@@ -32,13 +32,13 @@ void Node::AddOption(Option& option)
 }
 
 //-----
-const Node* const Node::GetNextNode() const
+int Node::GetNextNodeId() const
 {
-    return mNextNode;
+    return mNextNodeId;
 }
 
 //-----
-void Node::SetNextNode(Node* nextNode)
+void Node::SetNextNode(int nextNodeId)
 {
-    mNextNode = nextNode;
+    mNextNodeId = nextNodeId;
 }

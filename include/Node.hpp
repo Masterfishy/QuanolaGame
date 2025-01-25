@@ -55,14 +55,14 @@ class Node
      * Get the Node that follows this Node.
      * @return The next node.
      */
-    const Node* const GetNextNode() const;
+    int GetNextNodeId() const;
 
     /**
      * Set the Next Node object
      *
      * @param nextNode The next node
      */
-    void SetNextNode(Node* nextNode);
+    void SetNextNode(int nextNodeId);
 
   private:
     /**
@@ -78,5 +78,5 @@ class Node
     /**
      * The Node that follows this Node.
      */
-    Node* mNextNode;
+    int mNextNodeId;
 };

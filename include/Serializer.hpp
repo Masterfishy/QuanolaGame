@@ -1,7 +1,8 @@
 #pragma once
 
+#include <map>
+#include <memory>
 #include <string>
-#include <vector>
 
 // Forward declarations
 class Node;
@@ -14,6 +15,8 @@ class Value;
 class Serializer
 {
   public:
+    typedef std::map<int, std::unique_ptr<Node>> NodeCollection;
+
     /**
      * Create a list of nodes from a given file.
      *
@@ -24,7 +27,7 @@ class Serializer
      * @return false    If the load fails.
      */
     static bool LoadNodesFromFile(const std::string& fileName,
-                                  std::vector<Node*>& nodes);
+                                  NodeCollection& nodes);
 
     /**
      * Write the given nodes to a file.
@@ -34,7 +37,7 @@ class Serializer
      * @return true     If the node data is successfully serialized.
      * @return false    If the data could not be written.
      */
-    static bool WiteNodesToFile(const std::vector<Node*>& nodes,
+    static bool WiteNodesToFile(const NodeCollection& nodes,
                                 const std::string& fileName);
 
   private:
@@ -47,7 +50,7 @@ class Serializer
      * @return false    otherwise.
      */
     static bool DeserializeFromJson(const Json::Value& jsonData,
-                                    std::vector<Node*>& nodes);
+                                    NodeCollection& nodes);
 
     /**
      * Serialize nodes to json, filling the given root.
@@ -57,6 +60,6 @@ class Serializer
      * @return true     If successful.
      * @return false    otherwise.
      */
-    static bool SerializeToJson(const std::vector<Node*>& nodes,
+    static bool SerializeToJson(const NodeCollection& nodes,
                                 Json::Value& jsonData);
 };

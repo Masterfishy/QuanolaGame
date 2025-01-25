@@ -2,52 +2,38 @@
 #include "GameManager.hpp"
 #include "Node.hpp"
 #include "Option.hpp"
+#include "Serializer.hpp"
 
 #include <iostream>
 
+#include <signal.h>
+
+bool gShutdown = false;
+
+/**
+ * Handle the SIGINT signal to gracefully shutdown.
+ */
+extern "C" void signalHandler(int signum)
+{
+    gShutdown = true;
+}
+
 int main()
 {
-    std::unique_ptr<Node> startNode;
-    std::unique_ptr<Node> rightNode;
-    std::unique_ptr<Node> leftNode;
-    std::unique_ptr<Node> nextNode;
+    // Set up signal control
+    signal(SIGINT, signalHandler);
 
-    startNode = std::make_unique<Node>();
-    rightNode = std::make_unique<Node>();
-    leftNode = std::make_unique<Node>();
-    nextNode = std::make_unique<Node>();
+    // Deserialize node data.
+    Serializer::NodeCollection nodes;
+    Serializer::LoadNodesFromFile("./build/nodedata.json", nodes);
 
-    startNode->SetText("You wake up so woke.");
-    startNode->SetNextNode(nextNode.get());
-
-    Option rightOption;
-    rightOption.SetText("Go back to sleep.");
-    rightOption.SetNode(rightNode.get());
-    rightOption.SetQuanolaCost(1);
-
-    Option leftOption;
-    leftOption.SetText("Try to get out of bed.");
-    leftOption.SetNode(leftNode.get());
-    leftOption.SetQuanolaCost(3);
-
-    startNode->AddOption(rightOption);
-    startNode->AddOption(leftOption);
-
-    rightNode->SetText("You lay back down.");
-    rightNode->SetNextNode(nextNode.get());
-
-    leftNode->SetText(
-        "You try to get out of bed but you aren't fooling anyone.");
-    leftNode->SetNextNode(nextNode.get());
-
-    nextNode->SetText("You fall deeply asleep");
-    nextNode->SetNextNode(startNode.get());
-
+    // Create game objects
     std::unique_ptr<IRenderer> renderer = std::make_unique<CliRenderer>();
     std::unique_ptr<GameManager> gm =
-        std::make_unique<GameManager>(renderer, startNode, 200);
+        std::make_unique<GameManager>(renderer, nodes, 200);
 
-    while (true)
+    // Run the game
+    while (!gShutdown)
     {
         gm->Update();
     }

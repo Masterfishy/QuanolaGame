@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 // Forward declarations
 class Node;
@@ -33,17 +34,31 @@ class Option
     void SetText(const std::string& text);
 
     /**
-     * Get the Node of this Option.
-     * @return The Node of this Option.
+     * Get the id of the node of this Option.
+     * @return The id of the node of this option.
      */
-    const Node* const GetNode() const;
+    int GetNode() const;
 
     /**
-     * Set the Node object
+     * Add an id for a default node.
      *
-     * @param node The node of the Option.
+     * @param nodeId  The id of the node.
      */
-    void SetNode(Node* node);
+    void AddDefaultNode(int nodeId);
+
+    /**
+     * Add an id for a random node.
+     *
+     * @param nodeId  The id of the node.
+     */
+    void AddRandomNode(int nodeId);
+
+    /**
+     * Add an id for a conditional node.
+     *
+     * @param nodeId  The id of the node.
+     */
+    void AddConditionalNode(int nodeId);
 
     /**
      * Get the cost of this Option.
@@ -70,7 +85,17 @@ class Option
     std::string mText;
 
     /**
-     * The Node this Option leads to.
+     * The collection of ids for the default results
      */
-    Node* mNode;
+    std::vector<int> mDefaultNodeIds;
+
+    /**
+     * The collection of ids for the random results.
+     */
+    std::vector<int> mRandomNodeIds;
+
+    /**
+     * The collection of ids for the conditional results.
+     */
+    std::vector<int> mConditionalNodeIds;
 };

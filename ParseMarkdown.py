@@ -80,8 +80,12 @@ def parse_markdown(markdown: str) -> list:
             # print(f"Default Text: {default_result_text}")
             # print(f"Default Next: {default_result_next}")
 
-            for text, next_node in zip(default_result_text, default_result_next):
+            for i, next_node in enumerate(default_result_next):
             
+                text = ""
+                if len(default_result_text) > i:
+                    text = default_result_text[i]
+
                 print(f"Default Text: {text}")
                 print(f"Default Next: {next_node}")
 
@@ -104,7 +108,11 @@ def parse_markdown(markdown: str) -> list:
             # print(f"Random Text: {random_result_text}")
             # print(f"Random Next: {random_result_next}")
 
-            for text, next_node in zip(random_result_text, random_result_next):
+            for i, next_node in enumerate(random_result_next):
+            
+                text = ""
+                if len(random_result_text) > i:
+                    text = random_result_text[i]
 
                 print(f"Random Text: {text}")
                 print(f"Random Next: {next_node}")

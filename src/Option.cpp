@@ -1,7 +1,11 @@
 #include "Option.hpp"
 
 //-----
-Option::Option() : mCost(0), mText(""), mNode(nullptr) {}
+Option::Option()
+    : mCost(0), mText(""), mDefaultNodeIds(), mRandomNodeIds(),
+      mConditionalNodeIds()
+{
+}
 
 //-----
 Option::~Option() {}
@@ -19,15 +23,42 @@ void Option::SetText(const std::string& text)
 }
 
 //-----
-const Node* const Option::GetNode() const
+int Option::GetNode() const
 {
-    return mNode;
+    if (!mDefaultNodeIds.empty())
+    {
+        return mDefaultNodeIds.front();
+    }
+
+    if (!mRandomNodeIds.empty())
+    {
+        return mRandomNodeIds.front();
+    }
+
+    if (!mConditionalNodeIds.empty())
+    {
+        return mConditionalNodeIds.front();
+    }
+
+    return -1;
 }
 
 //-----
-void Option::SetNode(Node* node)
+void Option::AddDefaultNode(int nodeId)
 {
-    mNode = node;
+    mDefaultNodeIds.push_back(nodeId);
+}
+
+//-----
+void Option::AddRandomNode(int nodeId)
+{
+    mRandomNodeIds.push_back(nodeId);
+}
+
+//-----
+void Option::AddConditionalNode(int nodeId)
+{
+    mConditionalNodeIds.push_back(nodeId);
 }
 
 //-----
