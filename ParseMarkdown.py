@@ -10,6 +10,8 @@ def parse_markdown(markdown: str) -> list:
     node_id_lookup_table = {}    # title -> id
     node_lookup_table = {}       # id -> node
 
+    node_id_counter = 0
+
     sections = re.split(r"^## ([^{]+?)(?: \{.*\}|\n)$", markdown.strip(), flags=re.MULTILINE)
     if len(sections) < 3:
         return
@@ -22,9 +24,14 @@ def parse_markdown(markdown: str) -> list:
         node_id_lookup_table[node["title"]] = node["id"]
         node_lookup_table[node["id"]] = node
 
+        node_id_counter += 1
+
     print(node_id_lookup_table)
+    print(node_id_counter)
 
     for i, section in enumerate(sections[2::2]):
+
+        print(f"Node: {i}")
 
         content_split = re.split(r"### Cards", section.strip(), flags=re.MULTILINE)
         if len(content_split) < 1:
@@ -52,37 +59,78 @@ def parse_markdown(markdown: str) -> list:
         for card in cards_split[1::]:
             print(card)
 
-            card_title = re.search(r"^#### (.*)", card.strip())
+            card_title = re.search(r"(?<=#### )(.*)", card.strip())
             if card_title is None:
                 continue
 
-            print(card_title)
-            print(card_title.groups()[0])
+            # print(card_title)
+            print(f"Card Title: {card_title.group()}")
 
-            default_results = [result.replace("-"," ") for result in re.findall(r"- Event - Default .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)]
-            random_results = [result.replace("-"," ") for result in re.findall(r"- Event - Random .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)]
-            conditional_results = [result.replace("-"," ") for result in re.findall(r"- Event - Conditional .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)]
+            result_shared_text = ""
+            result_shared_text_search = re.findall(r"- Shared Text\n((?:  -.*\n)+)", card.strip(), flags=re.MULTILINE)
+            if len(result_shared_text_search) > 0:
+                result_shared_text = result_shared_text_search[0]
+                print(f"Shared Text: {result_shared_text}")
 
-            print(default_results)
-            print(random_results)
-            print(conditional_results)
+            # DEFAULT RESULTS
 
-            # Make a node for each result
+            default_results = []
+            default_result_text = re.findall(r"- Event - Default [^\n]+\n((?:  -.*\n?)*)", card.strip(), flags=re.MULTILINE)
+            default_result_next = re.findall(r"- Event - Default .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)
+            # print(f"Default Text: {default_result_text}")
+            # print(f"Default Next: {default_result_next}")
 
-            # result_node["id"] = node_counter ++
-            # result_node["title"] = title
-            # result_node["text"] = text
-            # result_node["next"] = node_id_lookup_table.get(title)
+            for text, next_node in zip(default_result_text, default_result_next):
+            
+                print(f"Default Text: {text}")
+                print(f"Default Next: {next_node}")
+
+                node_id = node_id_lookup_table.get(next_node.replace("-", " "))
+
+                default_node = {}
+                default_node["id"] = node_id_counter
+                default_node["text"] = result_shared_text + text
+                default_node["next"] = node_id
+
+                node_id_counter += 1
+
+                default_results.append(default_node)
+
+            # RANDOM RESULTS
+
+            random_results = []
+            random_result_text = re.findall(r"- Event - Random [^\n]+\n((?:  -.*\n?)*)", card.strip(), flags=re.MULTILINE)
+            random_result_next = re.findall(r"- Event - Random .*\(#(.+[^)])\)", card.strip(), flags=re.MULTILINE)
+            # print(f"Random Text: {random_result_text}")
+            # print(f"Random Next: {random_result_next}")
+
+            for text, next_node in zip(random_result_text, random_result_next):
+
+                print(f"Random Text: {text}")
+                print(f"Random Next: {next_node}")
+
+                node_id = node_id_lookup_table.get(next_node.replace("-", " "))
+
+                random_node = {}
+                random_node["id"] = node_id_counter
+                random_node["text"] = result_shared_text + text
+                random_node["next"] = node_id
+
+                node_id_counter += 1
+
+                random_results.append(random_node)
+
+            # CONDITIONAL RESULTS
 
             # Add the results to the option
 
             option = {}
-            option["title"] = card_title.groups()[0]
-            option["default_results"] = [node_id_lookup_table.get(title) for title in default_results]
-            option["random_results"] = [node_id_lookup_table.get(title) for title in random_results]
-            option["conditional_results"] = [node_id_lookup_table.get(title) for title in conditional_results]
+            option["title"] = card_title.group()
+            option["default_results"] = default_results
+            option["random_results"] = random_results
+            # option["conditional_results"] = [node_id_lookup_table.get(title) for title in conditional_results]
 
-            print(option)
+            # print(option)
 
             options.append(option)
 
