@@ -6,19 +6,22 @@
 #include <iostream>
 
 //-----
-GameManager::GameManager(std::unique_ptr<IRenderer>& renderer,
+GameManager::GameManager(std::unique_ptr<IRenderer>&           renderer,
                          std::map<int, std::unique_ptr<Node>>& nodes,
-                         int startQuanola)
+                         int                                   startQuanola)
     : mRenderer(std::move(renderer)), mGameNodes(std::move(nodes))
 {
-    const auto& startNode = mGameNodes.find(0);
-    if (startNode == mGameNodes.end())
+    const auto& mainMenuNode = mGameNodes.find(0);
+    const auto& quitNode     = mGameNodes.find(1);
+    const auto& gameOverNode = mGameNodes.find(2);
+
+    if (mainMenuNode == mGameNodes.end())
     {
         // If there is no start node we are done
         return;
     }
 
-    mGameState.node = startNode->second.get();
+    mGameState.node    = mainMenuNode->second.get();
     mGameState.quanola = startQuanola;
 
     mRenderer->OnNextEvent.AddListener(this, &GameManager::OnNext);

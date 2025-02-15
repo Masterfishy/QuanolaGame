@@ -1,12 +1,10 @@
-# Convert markdown to mermaid diagram
+# Convert markdown to json
 
 import re
 import sys
 import json
 
 def parse_markdown(markdown: str) -> list:
-    nodes = []
-
     node_id_lookup_table = {}    # title -> id
     node_lookup_table = {}       # id -> node
 

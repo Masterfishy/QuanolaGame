@@ -6,6 +6,6 @@ class Node;
 
 struct GameState
 {
-    int quanola;
+    int         quanola;
     const Node* node;
 };

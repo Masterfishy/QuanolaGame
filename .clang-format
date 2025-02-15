@@ -16,8 +16,8 @@ AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 
 # Alignment
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
 AlignEscapedNewlines: Left
 AlignOperands: true
 AlignTrailingComments: true
@@ -37,7 +37,7 @@ SpacesInSquareBrackets: false
 
 # Breaks
 BreakBeforeBraces: Allman
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals: true
 
 # Other

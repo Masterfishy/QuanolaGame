@@ -13,7 +13,7 @@ class Option;
 class GameManager
 {
   public:
-    GameManager(std::unique_ptr<IRenderer>& renderer,
+    GameManager(std::unique_ptr<IRenderer>&           renderer,
                 std::map<int, std::unique_ptr<Node>>& nodes, int startQuanola);
 
     /**

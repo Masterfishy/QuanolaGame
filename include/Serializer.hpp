@@ -27,7 +27,7 @@ class Serializer
      * @return false    If the load fails.
      */
     static bool LoadNodesFromFile(const std::string& fileName,
-                                  NodeCollection& nodes);
+                                  NodeCollection&    nodes);
 
     /**
      * Write the given nodes to a file.
@@ -38,7 +38,7 @@ class Serializer
      * @return false    If the data could not be written.
      */
     static bool WiteNodesToFile(const NodeCollection& nodes,
-                                const std::string& fileName);
+                                const std::string&    fileName);
 
   private:
     /**
@@ -50,7 +50,7 @@ class Serializer
      * @return false    otherwise.
      */
     static bool DeserializeFromJson(const Json::Value& jsonData,
-                                    NodeCollection& nodes);
+                                    NodeCollection&    nodes);
 
     /**
      * Serialize nodes to json, filling the given root.
@@ -61,5 +61,5 @@ class Serializer
      * @return false    otherwise.
      */
     static bool SerializeToJson(const NodeCollection& nodes,
-                                Json::Value& jsonData);
+                                Json::Value&          jsonData);
 };

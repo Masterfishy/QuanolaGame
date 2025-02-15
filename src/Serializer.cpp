@@ -8,7 +8,7 @@
 
 //-----
 bool Serializer::LoadNodesFromFile(const std::string& fileName,
-                                   NodeCollection& nodes)
+                                   NodeCollection&    nodes)
 {
     std::ifstream file(fileName);
     if (!file.is_open())
@@ -16,9 +16,9 @@ bool Serializer::LoadNodesFromFile(const std::string& fileName,
         return false;
     }
 
-    Json::Value root;
+    Json::Value             root;
     Json::CharReaderBuilder reader;
-    std::string errors;
+    std::string             errors;
 
     if (!Json::parseFromStream(reader, file, &root, &errors))
     {
@@ -31,7 +31,7 @@ bool Serializer::LoadNodesFromFile(const std::string& fileName,
 
 //-----
 bool Serializer::WiteNodesToFile(const NodeCollection& nodes,
-                                 const std::string& fileName)
+                                 const std::string&    fileName)
 {
     std::ofstream file(fileName);
     if (!file.is_open())
@@ -39,7 +39,7 @@ bool Serializer::WiteNodesToFile(const NodeCollection& nodes,
         return false;
     }
 
-    Json::Value root;
+    Json::Value               root;
     Json::StreamWriterBuilder writer;
 
     // Fill root with serialized nodes
@@ -56,13 +56,10 @@ bool Serializer::WiteNodesToFile(const NodeCollection& nodes,
 
 //-----
 bool Serializer::DeserializeFromJson(const Json::Value& jsonData,
-                                     NodeCollection& nodes)
+                                     NodeCollection&    nodes)
 {
     for (const auto& jsonNode : jsonData)
     {
-        // std::cout << "===NODE===" << std::endl;
-        // std::cout << jsonNode << std::endl << std::endl;
-
         // Deserialize the node id
         const Json::Value& jsonId = jsonNode["id"];
         if (jsonId == Json::Value::null)
@@ -212,7 +209,7 @@ bool Serializer::DeserializeFromJson(const Json::Value& jsonData,
 
 //-----
 bool Serializer::SerializeToJson(const NodeCollection& nodes,
-                                 Json::Value& jsonData)
+                                 Json::Value&          jsonData)
 {
     // for (const auto& node : nodes)
     // {

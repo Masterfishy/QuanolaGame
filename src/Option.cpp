@@ -26,6 +26,9 @@ void Option::SetText(const std::string& text)
 int Option::GetNode() const
 {
     // TODO handle results
+    // 1. Check conditional nodes
+    // 2. Draw from random weighted bag
+
     if (!mDefaultNodeIds.empty())
     {
         return mDefaultNodeIds.front();

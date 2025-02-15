@@ -28,7 +28,7 @@ int main()
     Serializer::LoadNodesFromFile("./build/nodedata.json", nodes);
 
     // Create game objects
-    std::unique_ptr<IRenderer> renderer = std::make_unique<CliRenderer>();
+    std::unique_ptr<IRenderer>   renderer = std::make_unique<CliRenderer>();
     std::unique_ptr<GameManager> gm =
         std::make_unique<GameManager>(renderer, nodes, 200);
 
